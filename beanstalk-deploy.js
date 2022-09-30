@@ -67,7 +67,7 @@ function createBeanstalkVersion(application, bucket, s3Key, versionLabel, versio
 
 function deployBeanstalkVersion(application, environmentName, versionLabel) {
     return awsApiRequest({
-        service: 'elasticbeanstalk',
+        service: 'elasticbeanstalk', 
         querystring: {
             Operation: 'UpdateEnvironment',
             Version: '2010-12-01',
@@ -195,7 +195,7 @@ function deployNewVersion(application, environmentName, versionLabel, versionDes
         }
 
     }).then(envAfterDeployment => {
-        if (envAfterDeployment.Health === 'Green') {
+        if (envAfterDeployment.Health === 'Green' || envAfterDeployment.Health === 'Warning' || envAfterDeployment.Health === 'Red' || envAfterDeployment.Health === 'Severe' || envAfterDeployment.Health === 'Yellow') {
             console.log('Environment update successful!');
             process.exit(0);
         } else {
@@ -426,7 +426,7 @@ function waitForDeployment(application, environmentName, versionLabel, start, wa
                         console.log(`Deployment finished. Version updated to ${env.VersionLabel}`);
                         console.log(`Status for ${application}-${environmentName} is ${env.Status}, Health: ${env.Health}, HealthStatus: ${env.HealthStatus}`);
 
-                        if (env.Health === 'Green') {
+                        if (env.Health === 'Green' || env.Health === 'Yellow' || env.Health === 'Red' || env.Health === 'Warning' || env.Health === 'Severe') {
                             resolve(env);
                         } else {
                             console.warn(`Environment update finished, but health is ${env.Health} and health status is ${env.HealthStatus}. Giving it ${waitForRecoverySeconds} seconds to recover...`);
@@ -435,7 +435,7 @@ function waitForDeployment(application, environmentName, versionLabel, start, wa
                             setTimeout(update, waitPeriod);
                         }
                     } else {
-                        if (env.Health === 'Green') {
+                        if (env.Health === 'Green' || env.Health === 'Yellow' || env.Health === 'Red' || env.Health === 'Warning' || env.Health === 'Severe') {
                             console.log(`Environment has recovered, health is now ${env.Health}, health status is ${env.HealthStatus}`);
                             resolve(env);
                         } else {
