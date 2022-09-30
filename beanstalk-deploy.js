@@ -226,13 +226,8 @@ function deployExistingVersion(application, environmentName, versionLabel, waitU
             process.exit(0);
         }
     }).then(envAfterDeployment => {
-        if (envAfterDeployment.Health === 'Green') {
-            console.log('Environment update successful!');
-            process.exit(0);
-        } else {
-            console.warn(`Environment update finished, but environment health is: ${envAfterDeployment.Health}, HealthStatus: ${envAfterDeployment.HealthStatus}`);
-            process.exit(1);
-        }
+        console.log('Environment update successful!');
+        process.exit(0);
     }).catch(err => {
         console.error(`Deployment failed: ${err}`);
         process.exit(2);
